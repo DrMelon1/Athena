@@ -1,2 +1,2 @@
 # Athena
-(work in progress) gaming backlog project
+(work in progress) backlog project

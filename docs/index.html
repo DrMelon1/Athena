@@ -1,1 +1,57 @@
-<h>hello world!</h>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Athena / Game Backlog</title>
+    <link rel="icon" type="image/x-icon" href="images/AthenaV1.ico">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+
+        <img src="images/AthenaV1.png" alt="Athena Logo" style="width: 150px; height: auto;" />
+
+        <h1>Athena / Game Backlog</h1>
+        <h3><i>Take your Time!</i></h3>
+
+        <div class="controls">
+            <button id="addGameButton">+ Add Game</button>
+        </div>
+
+        <div style="margin-left: auto; display: flex; gap: 8px; align-items: center;">
+            <select id="statusFilter">
+                <option value="">Filter: Show All</option>
+                <option value="1. Playing">1. Playing</option>
+                <option value="2. On-Hold">2. On-Hold</option>
+                <option value="3. On-Going">3. On-Going</option>
+                <option value="4. Not Started">4. Not Started</option>
+                <option value="5. Finished">5. Finished</option>
+            </select>
+            <input id="inputSearch" class="search" placeholder="Search Game..." />
+        </div>
+
+        <table id="gameTable">
+            <thead>
+                <tr>
+                    <th data-key="title">Title</th>
+                    <th data-key="status">Status</th>
+                    <th data-key="dlc">DLC</th>
+                    <th data-key="rating">Rating</th>
+                    <th data-key="actions">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Game entries will be inserted here -->
+            </tbody>
+        </table>
+        
+    </div>
+    <script src="script.js" defer></script>
+</body>
+</html>
+
+
+
+
+
