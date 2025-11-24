@@ -7,13 +7,28 @@ body{
 }
 
 .container{
-    max-width:1000px;
-    margin:0 auto
+    max-width: 1000px;
+    margin:0 auto;
+}
+
+.backlog_link a {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.backlog_link a:hover {
+
+    background: linear-gradient(90deg, #dfbb68, #b28f4a);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    transition: 0.5s ease;
 }
 
 h1{
     font-size:40px;
     margin-bottom:20px
+
 }
 
 h3{
@@ -49,9 +64,13 @@ thead th{
 }
 
 tbody td{
-    padding:10px 12px;
+    padding: 10px 12px;
     border-top:1px solid rgba(255,255,255,.03);
-    vertical-align:middle
+    vertical-align: middle;
+}
+
+tbody tr{
+    vertical-align: middle;
 }
 
 tbody tr:hover td{
@@ -76,9 +95,9 @@ tbody tr:hover td{
 }
 
 .controls{
-    display:flex;
-    gap:8px;
-    align-items:center
+    display: flex;
+    gap: 6px;
+    align-items: center;
 }
 
 .search{

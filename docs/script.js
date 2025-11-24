@@ -4,6 +4,9 @@ const demoData = [
 ];
 
 let games = loadFromStorage() || demoData.slice();
+
+let fileHandle = null;
+
 const tbody = document.querySelector("#gameTable tbody");
 
 function saveToStorage(){
@@ -11,7 +14,8 @@ function saveToStorage(){
 }
 
 function loadFromStorage(){
-    try{return JSON.parse(localStorage.getItem("gameBacklog"));}catch(e){return null} 
+    try{return JSON.parse(localStorage.getItem("gameBacklog"));}
+    catch(e) {return null;} 
 }
 
 function renderTable(){
@@ -138,11 +142,121 @@ function renderTable(){
     document.getElementById("statusFilter").onchange = renderTable;
     document.getElementById("inputSearch").oninput = renderTable;
 
-    // xss protection
-    function escapeHtml(s){
-        return (s||"").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    // csv handling
+    function generateCSV() {
+        let csv = "Title,Status,DLC,Rating\n";
+        games.forEach(game => {
+            csv += `${game.title},${game.status},${game.dlc},${game.rating}\n`;
+        });
+        return csv;
     }
 
-    renderTable();
+    // save as (.csv)
+    function saveAsCSV() {
+        const csv = generateCSV();
+        const blob = new Blob([csv], { type: 'text/csv' });
+
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "game_backlog.csv";
+        a.click();
+    }
+
+    // save
+    async function saveToCSV() {
+        if(!("showSaveFilePicker" in window) || !fileHandle) {
+            return saveAsCSV();
+        }
+        
+        const writable = await fileHandle.createWritable();
+        await writable.write(generateCSV());
+        await writable.close();
+        alert("File saved successfully!");
+    }
+
+    // open (+ fallback in case of unsupported browser)
+
+    document.getElementById("openFileButton").onclick = async() => {
+        if("showOpenFilePicker" in window) {
+            try {
+                [fileHandle] = await window.showOpenFilePicker({
+                    types: [{
+                        description: 'CSV Files',
+                        accept: { 'text/csv': ['.csv'] }
+                    }]
+                });
+
+                const file = await fileHandle.getFile();
+                const text = await file.text();
+                loadCsvText(text);
+                console.log("File loaded successfully!");
+            } catch (e) {
+                console.error(e);
+                alert("Failed to open file.");
+            }
+        } 
+        else {
+        
+            const input = document.createElement("input");
+            input.type = "file";
+            input.accept = ".csv";
+            input.onchange = async () => {
+                const file = input.files[0];
+                const text = await file.text();
+                loadCsvText(text);
+                console.log("File loaded successfully!");
+            };
+            input.click();
+        }
+    };
+
+    function loadCsvText(text) {
+        const rows = text.trim().split("\n").map(r => r.split(","));
+        games = rows.slice(1).map(r => ({
+            title: r[0] || "",
+            status: r[1] || "",
+            dlc: r[2] || "",
+            rating: r[3] || ""
+        }));
+        saveToStorage();
+        renderTable();
+    }
+
+    // save button
+    document.getElementById("saveFileButton").onclick = async() => {
+        if (!("showSaveFilePicker" in window)) {
+            // if filesystem access not allowed >>> save as!!
+            saveAsCSV();
+            return;
+        }
+
+        if (!fileHandle) {
+            // if file doesn't exist >>> save as!!
+            fileHandle = await window.showSaveFilePicker({
+                suggestedName: "game_backlog.csv",
+                types: [{
+                    description: 'CSV Files',
+                    accept: { 'text/csv': ['.csv'] }
+                }]
+            });
+        }
+        saveToCSV();
+    };
+
+    // save as button
+    document.getElementById("saveAsButton").onclick = saveAsCSV;
+
+
+    // xss protection
+    function escapeHtml(s){
+        return (s||"")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+document.getElementById("inputSearch").value = "";
+renderTable();
 
 console.log("script.js run complete");
