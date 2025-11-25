@@ -10,12 +10,12 @@ let fileHandle = null;
 const tbody = document.querySelector("#gameTable tbody");
 
 function saveToStorage(){
-    localStorage.setItem("gameBacklog", JSON.stringify(games)); 
+    localStorage.setItem("gameBacklog", JSON.stringify(games));
 }
 
 function loadFromStorage(){
     try{return JSON.parse(localStorage.getItem("gameBacklog"));}
-    catch(e) {return null;} 
+    catch(e) {return null;}
 }
 
 function renderTable(){
@@ -58,17 +58,6 @@ function renderTable(){
         attachListeners();
     }
 
-    /* update statusClass to statusMap later on?
-    const statusMap = {
-        "1": "status-playing",
-        "2": "status-onhold",
-        "3": "status-ongoing",
-        "4": "status-notstarted",
-        "5": "status-finished"
-    };
-    return statusMap[status[0]] || "";
-    */
-
     function statusClass(status){
         if(status.startsWith("1")) return "status-playing";
         if(status.startsWith("2")) return "status-onhold";
@@ -103,7 +92,7 @@ function renderTable(){
 
     // add Row
     document.getElementById("addGameButton").onclick = ()=>{
-        games.push({ title: "New Game", status: "4. Not Started", dlc: "No", rating: "-"});
+        games.unshift({ title: "New Game", status: "4. Not Started", dlc: "No", rating: "-"});
         saveToStorage();
         renderTable();
     };
