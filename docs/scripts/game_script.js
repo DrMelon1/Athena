@@ -121,6 +121,14 @@ function renderTable(){
             document.addEventListener("mousedown", closeMenu);
         }, 0);
 
+        const closeOnScroll = () => {
+            menu.remove();
+            window.removeEventListener("scroll", closeOnScroll);
+            document.removeEventListener("mousedown", closeMenu);
+        };
+
+        window.addEventListener("scroll", closeOnScroll);
+
     }
 
     
