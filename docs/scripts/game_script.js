@@ -48,292 +48,294 @@ function renderTable(){
                 <button data-action="delete" data-index="${index}">Delete</button>
             </td>
         `;
+
         tbody.appendChild(tr);
-        });
-        attachListeners();
+
+    });
+
+    attachListeners();
+
+}
+
+let currentStatusMenu = null;
+
+function openStatusMenu(badge, index) {
+
+    if (currentStatusMenu) {
+        currentStatusMenu.remove();
+        currentStatusMenu = null;
     }
 
-    let currentStatusMenu = null;
+    const menu = document.createElement("div");
+    menu.className = "status-menu";
+    currentStatusMenu = menu;
 
-    function openStatusMenu(badge, index) {
+    const options = [
+        "1. Playing",
+        "2. On-Hold",
+        "3. On-Going",
+        "4. Not Started",
+        "5. Finished"
+    ];
 
-        if (currentStatusMenu) {
-            currentStatusMenu.remove();
-            currentStatusMenu = null;
-        }
-
-        const menu = document.createElement("div");
-        menu.className = "status-menu";
-        currentStatusMenu = menu;
-
-        const options = [
-            "1. Playing",
-            "2. On-Hold",
-            "3. On-Going",
-            "4. Not Started",
-            "5. Finished"
-        ];
-
-        options.forEach(option => {
-            const item = document.createElement("div");
-            item.className = "status-item";
-            item.textContent = option;
-            item.onclick = () => {
-                games[index].status = option;
-                saveToStorage();
-                renderTable();
-                menu.remove();
-                currentStatusMenu = null;
-            };
-            menu.appendChild(item);
-        });
-        
-        document.body.appendChild(menu);
-
-        // get badge position
-        const rect = badge.getBoundingClientRect();
-
-        // calc available space
-        const spaceBelow = window.innerHeight - rect.bottom;
-        const spaceAbove = rect.top;
-
-        // est. menu height (approx. 40px per item + padding)
-        const estimatedMenuHeight = options.length * 40 + 12;
-
-        // determine menu position
-        if (spaceBelow >= estimatedMenuHeight || spaceBelow >= spaceAbove) {
-
-            // below
-            menu.style.top = (rect.bottom + window.scrollY) + "px";
-        
-        }
-        else {
-            
-            // above
-            menu.style.top = (rect.top + window.scrollY - estimatedMenuHeight) + "px";
-
-        }
-
-        // horizontal position (aligned w/ badge)
-        menu.style.left = (rect.left + window.scrollX) + "px";
-
-        const closeMenu = (e) => {
-            if(!menu.contains(e.target) && e.target !== badge) {
-                menu.remove();
-                currentStatusMenu = null;
-                document.removeEventListener("mousedown", closeMenu);
-            }
-        };
-        setTimeout(() => {
-            document.addEventListener("mousedown", closeMenu);
-        }, 0);
-
-        const closeOnScroll = () => {
+    options.forEach(option => {
+        const item = document.createElement("div");
+        item.className = "status-item";
+        item.textContent = option;
+        item.onclick = () => {
+            games[index].status = option;
+            saveToStorage();
+            renderTable();
             menu.remove();
             currentStatusMenu = null;
-            window.removeEventListener("scroll", closeOnScroll);
-            document.removeEventListener("mousedown", closeMenu);
         };
-
-        window.addEventListener("scroll", closeOnScroll);
-
-    }
-
+        menu.appendChild(item);
+    });
     
+    document.body.appendChild(menu);
 
-    function statusClass(status){
-        if(status.startsWith("1")) return "status-playing";
-        if(status.startsWith("2")) return "status-onhold";
-        if(status.startsWith("3")) return "status-ongoing";
-        if(status.startsWith("4")) return "status-notstarted";
-        if(status.startsWith("5")) return "status-finished";
-        return "";
+    // get badge position
+    const rect = badge.getBoundingClientRect();
+
+    // calc available space
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const spaceAbove = rect.top;
+
+    // est. menu height (approx. 40px per item + padding)
+    const estimatedMenuHeight = options.length * 40 + 12;
+
+    // determine menu position
+    if (spaceBelow >= estimatedMenuHeight || spaceBelow >= spaceAbove) {
+
+        // below
+        menu.style.top = (rect.bottom + window.scrollY) + "px";
+    
+    }
+    else {
+        
+        // above
+        menu.style.top = (rect.top + window.scrollY - estimatedMenuHeight) + "px";
+
     }
 
-    function attachListeners(){
-        // inputs / selects
-        tbody.querySelectorAll("input[data-field], select[data-field]").forEach(elem=>{
-            elem.onchange = ()=>{
-                const index = elem.dataset.index; const f = elem.dataset.field;
-                games[index][f] = elem.value;
-                saveToStorage();
-                renderTable(); 
-            };
-        });
+    // horizontal position (aligned w/ badge)
+    menu.style.left = (rect.left + window.scrollX) + "px";
 
-        tbody.querySelectorAll("button[data-action='delete']").forEach(btn=>{
-            btn.onclick = ()=>{
-                const index = btn.dataset.index; const action = btn.dataset.action;
-                if(action === "delete"){
-                    games.splice(index, 1);
-                    saveToStorage();
-                    renderTable();
-                }
-            };
-        });
+    const closeMenu = (e) => {
+        if(!menu.contains(e.target) && e.target !== badge) {
+            menu.remove();
+            currentStatusMenu = null;
+            document.removeEventListener("mousedown", closeMenu);
+        }
+    };
+    setTimeout(() => {
+        document.addEventListener("mousedown", closeMenu);
+    }, 0);
 
-        tbody.querySelectorAll(".status-badge-clickable").forEach(badge=>{
-            badge.onclick = ()=>{
-                const index = badge.dataset.index;
-                openStatusMenu(badge, index);
-            };
-        });
-    }
-
-    // add Row
-    document.getElementById("addGameButton").onclick = ()=>{
-        games.unshift({ title: "New Game", status: "4. Not Started", dlc: "No", rating: "-"});
-        saveToStorage();
-        renderTable();
+    const closeOnScroll = () => {
+        menu.remove();
+        currentStatusMenu = null;
+        window.removeEventListener("scroll", closeOnScroll);
+        document.removeEventListener("mousedown", closeMenu);
     };
 
-    // header sort
-    document.querySelectorAll("thead th").forEach(th=>{
-        th.onclick = ()=>{
-            const key = th.dataset.key;
-            if(!key || key === "actions" || key === "cover") 
-                return;
+    window.addEventListener("scroll", closeOnScroll);
 
-            if(!key || key === "dlc" || key === "rating" ) {
-                games.sort((a,b)=>{
-                const va=(a[key]||"").toString().toLowerCase();
-                const vb=(b[key]||"").toString().toLowerCase();
-                if(va>vb) return -1;
-                if(va<vb) return 1;
-                return 0;
-            });
-            }
-            else {
-                games.sort((a,b)=>{
-                const va=(a[key]||"").toString().toLowerCase();
-                const vb=(b[key]||"").toString().toLowerCase();
-                if(va<vb) return -1;
-                if(va>vb) return 1;
-                return 0;
-            });
-            }
-            
-            renderTable();
+}
+
+function statusClass(status){
+    if(status.startsWith("1")) return "status-playing";
+    if(status.startsWith("2")) return "status-onhold";
+    if(status.startsWith("3")) return "status-ongoing";
+    if(status.startsWith("4")) return "status-notstarted";
+    if(status.startsWith("5")) return "status-finished";
+    return "";
+}
+
+function attachListeners(){
+    // inputs / selects
+    tbody.querySelectorAll("input[data-field], select[data-field]").forEach(elem=>{
+        elem.onchange = ()=>{
+            const index = elem.dataset.index; const f = elem.dataset.field;
+            games[index][f] = elem.value;
+            saveToStorage();
+            renderTable(); 
         };
     });
 
-    // filter & search
-    document.getElementById("statusFilter").onchange = renderTable;
-    document.getElementById("inputSearch").oninput = renderTable;
-
-    // csv handling
-    function generateCSV() {
-        let csv = "Title,Status,DLC,Rating\n";
-        games.forEach(game => {
-            csv += `${game.title},${game.status},${game.dlc},${game.rating}\n`;
-        });
-        return csv;
-    }
-
-    // save as (.csv)
-    function saveAsCSV() {
-        const csv = generateCSV();
-        const blob = new Blob([csv], { type: 'text/csv' });
-
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = "game_backlog.csv";
-        a.click();
-    }
-
-    // save
-    async function saveToCSV() {
-        if(!("showSaveFilePicker" in window) || !fileHandle) {
-            return saveAsCSV();
-        }
-        
-        const writable = await fileHandle.createWritable();
-        await writable.write(generateCSV());
-        await writable.close();
-        alert("File saved successfully!");
-    }
-
-    // open (+ fallback in case of unsupported browser)
-
-    document.getElementById("openFileButton").onclick = async() => {
-        if("showOpenFilePicker" in window) {
-            try {
-                [fileHandle] = await window.showOpenFilePicker({
-                    types: [{
-                        description: 'CSV Files',
-                        accept: { 'text/csv': ['.csv'] }
-                    }]
-                });
-
-                const file = await fileHandle.getFile();
-                const text = await file.text();
-                loadCsvText(text);
-                console.log("File loaded successfully!");
-            } catch (e) {
-                console.error(e);
-                alert("Failed to open file.");
+    tbody.querySelectorAll("button[data-action='delete']").forEach(btn=>{
+        btn.onclick = ()=>{
+            const index = btn.dataset.index; const action = btn.dataset.action;
+            if(action === "delete"){
+                games.splice(index, 1);
+                saveToStorage();
+                renderTable();
             }
-        } 
-        else {
-        
-            const input = document.createElement("input");
-            input.type = "file";
-            input.accept = ".csv";
-            input.onchange = async () => {
-                const file = input.files[0];
-                const text = await file.text();
-                loadCsvText(text);
-                console.log("File loaded successfully!");
-            };
-            input.click();
-        }
-    };
+        };
+    });
 
-    function loadCsvText(text) {
-        const rows = text.trim().split("\n").map(r => r.split(","));
-        games = rows.slice(1).map(r => ({
-            title: r[0] || "",
-            status: r[1] || "",
-            dlc: r[2] || "",
-            rating: r[3] || ""
-        }));
-        saveToStorage();
-        renderTable();
-    }
+    tbody.querySelectorAll(".status-badge-clickable").forEach(badge=>{
+        badge.onclick = ()=>{
+            const index = badge.dataset.index;
+            openStatusMenu(badge, index);
+        };
+    });
+}
 
-    // save button
-    document.getElementById("saveFileButton").onclick = async() => {
-        if (!("showSaveFilePicker" in window)) {
-            // if filesystem access not allowed >>> save as!!
-            saveAsCSV();
+// add Row
+document.getElementById("addGameButton").onclick = ()=>{
+    games.unshift({ title: "New Game", status: "4. Not Started", dlc: "No", rating: "-"});
+    saveToStorage();
+    renderTable();
+};
+
+// header sort
+document.querySelectorAll("thead th").forEach(th=>{
+    th.onclick = ()=>{
+        const key = th.dataset.key;
+        if(!key || key === "actions" || key === "cover") 
             return;
-        }
 
-        if (!fileHandle) {
-            // if file doesn't exist >>> save as!!
-            fileHandle = await window.showSaveFilePicker({
-                suggestedName: "game_backlog.csv",
+        if(!key || key === "dlc" || key === "rating" ) {
+            games.sort((a,b)=>{
+            const va=(a[key]||"").toString().toLowerCase();
+            const vb=(b[key]||"").toString().toLowerCase();
+            if(va>vb) return -1;
+            if(va<vb) return 1;
+            return 0;
+        });
+        }
+        else {
+            games.sort((a,b)=>{
+            const va=(a[key]||"").toString().toLowerCase();
+            const vb=(b[key]||"").toString().toLowerCase();
+            if(va<vb) return -1;
+            if(va>vb) return 1;
+            return 0;
+        });
+        }
+        
+        renderTable();
+    };
+});
+
+// filter & search
+document.getElementById("statusFilter").onchange = renderTable;
+document.getElementById("inputSearch").oninput = renderTable;
+
+// csv handling
+function generateCSV() {
+    let csv = "Title,Status,DLC,Rating\n";
+    games.forEach(game => {
+        csv += `${game.title},${game.status},${game.dlc},${game.rating}\n`;
+    });
+    return csv;
+}
+
+// save as (.csv)
+function saveAsCSV() {
+    const csv = generateCSV();
+    const blob = new Blob([csv], { type: 'text/csv' });
+
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "game_backlog.csv";
+    a.click();
+}
+
+// save
+async function saveToCSV() {
+    if(!("showSaveFilePicker" in window) || !fileHandle) {
+        return saveAsCSV();
+    }
+    
+    const writable = await fileHandle.createWritable();
+    await writable.write(generateCSV());
+    await writable.close();
+    alert("File saved successfully!");
+}
+
+// open (+ fallback in case of unsupported browser)
+
+document.getElementById("openFileButton").onclick = async() => {
+    if("showOpenFilePicker" in window) {
+        try {
+            [fileHandle] = await window.showOpenFilePicker({
                 types: [{
                     description: 'CSV Files',
                     accept: { 'text/csv': ['.csv'] }
                 }]
             });
+
+            const file = await fileHandle.getFile();
+            const text = await file.text();
+            loadCsvText(text);
+            console.log("File loaded successfully!");
+        } catch (e) {
+            console.error(e);
+            alert("Failed to open file.");
         }
-        saveToCSV();
-    };
-
-    // save as button
-    document.getElementById("saveAsButton").onclick = saveAsCSV;
-
-
-    // xss protection
-    function escapeHtml(s){
-        return (s||"")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;");
+    } 
+    else {
+    
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = ".csv";
+        input.onchange = async () => {
+            const file = input.files[0];
+            const text = await file.text();
+            loadCsvText(text);
+            console.log("File loaded successfully!");
+        };
+        input.click();
     }
+};
+
+function loadCsvText(text) {
+    const rows = text.trim().split("\n").map(r => r.split(","));
+    games = rows.slice(1).map(r => ({
+        title: r[0] || "",
+        status: r[1] || "",
+        dlc: r[2] || "",
+        rating: r[3] || ""
+    }));
+    saveToStorage();
+    renderTable();
+}
+
+// save button
+document.getElementById("saveFileButton").onclick = async() => {
+    if (!("showSaveFilePicker" in window)) {
+        // if filesystem access not allowed >>> save as!!
+        saveAsCSV();
+        return;
+    }
+
+    if (!fileHandle) {
+        // if file doesn't exist >>> save as!!
+        fileHandle = await window.showSaveFilePicker({
+            suggestedName: "game_backlog.csv",
+            types: [{
+                description: 'CSV Files',
+                accept: { 'text/csv': ['.csv'] }
+            }]
+        });
+    }
+    saveToCSV();
+};
+
+// save as button
+document.getElementById("saveAsButton").onclick = saveAsCSV;
+
+
+// xss protection
+function escapeHtml(s){
+    return (s||"")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
 
 document.getElementById("inputSearch").value = "";
 renderTable();
