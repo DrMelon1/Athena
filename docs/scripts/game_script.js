@@ -53,13 +53,18 @@ function renderTable(){
         attachListeners();
     }
 
+    let currentStatusMenu = null;
+
     function openStatusMenu(badge, index) {
 
-        const existingMenu = document.getElementById(".status-menu");
-        if (existingMenu) existingMenu.remove();
+        if (currentStatusMenu) {
+            currentStatusMenu.remove();
+            currentStatusMenu = null;
+        }
 
         const menu = document.createElement("div");
         menu.className = "status-menu";
+        currentStatusMenu = menu;
 
         const options = [
             "1. Playing",
@@ -78,6 +83,7 @@ function renderTable(){
                 saveToStorage();
                 renderTable();
                 menu.remove();
+                currentStatusMenu = null;
             };
             menu.appendChild(item);
         });
@@ -114,6 +120,7 @@ function renderTable(){
         const closeMenu = (e) => {
             if(!menu.contains(e.target) && e.target !== badge) {
                 menu.remove();
+                currentStatusMenu = null;
                 document.removeEventListener("mousedown", closeMenu);
             }
         };
@@ -123,6 +130,7 @@ function renderTable(){
 
         const closeOnScroll = () => {
             menu.remove();
+            currentStatusMenu = null;
             window.removeEventListener("scroll", closeOnScroll);
             document.removeEventListener("mousedown", closeMenu);
         };
