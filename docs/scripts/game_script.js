@@ -31,14 +31,9 @@ function renderTable(){
         tr.innerHTML = `
             <td><input type="text" value="${escapeHtml(game.title)}" data-index="${index}" data-field="title" style="width:100%"></td>
             <td>
-                <select data-index="${index}" data-field="status">
-                    <option ${game.status === "1. Playing" ? "selected" : ""}>1. Playing</option>
-                    <option ${game.status === "2. On-Hold" ? "selected" : ""}>2. On-Hold</option>
-                    <option ${game.status === "3. On-Going" ? "selected" : ""}>3. On-Going</option>
-                    <option ${game.status === "4. Not Started" ? "selected" : ""}>4. Not Started</option>
-                    <option ${game.status === "5. Finished" ? "selected" : ""}>5. Finished</option>
-                </select>
-                <div style="margin-top:5px;"><span class="status-badge ${statusClass(game.status)}">${game.status}</span></div>
+                <div style="margin-top:5px;">
+                    <span class="status-badge ${statusClass(game.status)} status-badge-clickable" data-index="${index}">${game.status}</span>
+                </div>
             </td>
             <td>
                 <select data-index="${index}" data-field="dlc">
@@ -57,6 +52,78 @@ function renderTable(){
         });
         attachListeners();
     }
+
+    function openStatusMenu(badge, index) {
+
+        const existingMenu = document.getElementById(".status-menu");
+        if (existingMenu) existingMenu.remove();
+
+        const menu = document.createElement("div");
+        menu.className = "status-menu";
+
+        const options = [
+            "1. Playing",
+            "2. On-Hold",
+            "3. On-Going",
+            "4. Not Started",
+            "5. Finished"
+        ];
+
+        options.forEach(option => {
+            const item = document.createElement("div");
+            item.className = "status-item";
+            item.textContent = option;
+            item.onclick = () => {
+                games[index].status = option;
+                saveToStorage();
+                renderTable();
+                menu.remove();
+            };
+            menu.appendChild(item);
+        });
+        
+        document.body.appendChild(menu);
+
+        // get badge position
+        const rect = badge.getBoundingClientRect();
+
+        // calc available space
+        const spaceBelow = window.innerHeight - rect.bottom;
+        const spaceAbove = rect.top;
+
+        // est. menu height (approx. 40px per item + padding)
+        const estimatedMenuHeight = options.length * 40 + 12;
+
+        // determine menu position
+        if (spaceBelow >= estimatedMenuHeight || spaceBelow >= spaceAbove) {
+
+            // below
+            menu.style.top = (rect.bottom + window.scrollY) + "px";
+        
+        }
+        else {
+            
+            // above
+            menu.style.top = (rect.top + window.scrollY - estimatedMenuHeight) + "px";
+
+        }
+
+        // horizontal position (aligned w/ badge)
+        menu.style.left = (rect.left + window.scrollX) + "px";
+
+        const closeMenu = (e) => {
+            if(!menu.contains(e.target) && e.target !== badge) {
+                menu.remove();
+                document.removeEventListener("mousedown", closeMenu);
+            }
+        };
+        setTimeout(() => {
+            document.addEventListener("mousedown", closeMenu);
+        }, 0);
+
+    }
+
+    
 
     function statusClass(status){
         if(status.startsWith("1")) return "status-playing";
@@ -86,6 +153,13 @@ function renderTable(){
                     saveToStorage();
                     renderTable();
                 }
+            };
+        });
+
+        tbody.querySelectorAll(".status-badge-clickable").forEach(badge=>{
+            badge.onclick = ()=>{
+                const index = badge.dataset.index;
+                openStatusMenu(badge, index);
             };
         });
     }

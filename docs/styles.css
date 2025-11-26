@@ -95,6 +95,39 @@ td select {
     font-size: 12px;
 }
 
+.status-menu {
+    position: absolute;
+    background: #1e1e1e;
+    border-radius:  10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    min-width: 150px;
+    padding: 6px 0;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    z-index: 9999;
+}
+
+.status-item {
+    padding: 10px 16px;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    white-space: nowrap;
+    transition: background-color 0.2 ease;
+}
+
+.status-item:hover {
+    background: rgba(255,255,255,0.12);
+}
+
+.status-badge-clickable{
+    cursor: pointer;
+    transition: 0.15s ease;
+}
+
+.status-badge-clickable:hover{
+    transform: scale(1.03);
+}
+
 .status-playing{background:#d1fae5;color:#065f46}
 .status-onhold{background:#fff7ed;color:#92400e}
 .status-ongoing{background:#f3e8ff;color:#5b21b6}
