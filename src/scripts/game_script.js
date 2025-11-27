@@ -38,6 +38,7 @@ function renderTable(){
 
         const tr = document.createElement("tr");
         tr.innerHTML = `
+            <td class="id" style="text-align:center;">${tbody.children.length + 1}</td>
             <td><input type="text" value="${escapeHtml(game.title)}" data-index="${index}" data-field="title" style="width:100%"></td>
             <td>
                 <div style="margin-top:5px;">
@@ -204,7 +205,7 @@ document.querySelectorAll("thead th").forEach(th=>{
         const key = th.dataset.key;
 
         // ignore if the user tries to sort these columns
-        if(!key || key === "actions") //  || key === "cover" <-- implement later on (in TV?), also add ID (#) here when implemented?
+        if(!key || key === "actions" || key === "id") //  || key === "cover" <-- implement later on (in TV?), also add ID (#) here when implemented?
             return;
 
         // note: if rating 10 is given, it appears at the bottom of the list (probably due to sorting by first digit?) <-- fix soon!
@@ -226,7 +227,7 @@ document.querySelectorAll("thead th").forEach(th=>{
             return 0;
         });
         }
-        
+        saveToStorage();
         renderTable();
     };
 });
@@ -237,9 +238,9 @@ document.getElementById("inputSearch").oninput = renderTable;
 
 // csv handling
 function generateCSV() {
-    let csv = "Title,Status,DLC,Rating\n";
+    let csv = "ID,Title,Status,DLC,Rating\n";
     games.forEach(game => {
-        csv += `${game.title},${game.status},${game.dlc},${game.rating}\n`;
+        csv += `${index + 1},${game.title},${game.status},${game.dlc},${game.rating}\n`;
     });
     return csv;
 }
@@ -306,10 +307,11 @@ document.getElementById("openFileButton").onclick = async() => {
 function loadCsvText(text) {
     const rows = text.trim().split("\n").map(r => r.split(","));
     games = rows.slice(1).map(r => ({
-        title: r[0] || "",
-        status: r[1] || "",
-        dlc: r[2] || "",
-        rating: r[3] || ""
+        id: Number(r[0]),
+        title: r[1] || "",
+        status: r[2] || "",
+        dlc: r[3] || "",
+        rating: r[4] || ""
     }));
     saveToStorage();
     renderTable();

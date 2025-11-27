@@ -62,7 +62,7 @@ input[type=text], select{
     transition: 0.2s ease-in;
 }
 
-input[type=text], select:hover {
+input[type=text]:hover, select:hover {
     background-color: #2e2e2e;
     border-color: #dfbb68;
 }
