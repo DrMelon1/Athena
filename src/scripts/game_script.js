@@ -3,15 +3,21 @@ const demoData = [
     { title: "dlc 1", status: "4. Not Started", dlc: "Yes", rating: "-"},
 ];
 
+const statusOrder = {
+    "Playing": 1,
+    "On-Hold": 2,
+    "On-Going": 3,
+    "Not Started": 4,
+    "Finished": 5
+};
+
 let games = loadFromStorage() || demoData.slice();
 
 // Default sort table by status
 games.sort((a, b) => {
-    const va = (a.status || "").toLowerCase();
-    const vb = (b.status || "").toLowerCase();
-    if (va < vb) return -1;
-    if (va > vb) return 1;
-    return 0;
+    const orderA = statusOrder[a.status];
+    const orderB = statusOrder[b.status];
+    return orderA - orderB;
 });
 
 let fileHandle = null;
@@ -81,11 +87,11 @@ function openStatusMenu(badge, index) {
     currentStatusMenu = menu;
 
     const options = [
-        "1. Playing",
-        "2. On-Hold",
-        "3. On-Going",
-        "4. Not Started",
-        "5. Finished"
+        "Playing",
+        "On-Hold",
+        "On-Going",
+        "Not Started",
+        "Finished"
     ];
 
     options.forEach(option => {
@@ -154,11 +160,11 @@ function openStatusMenu(badge, index) {
 }
 
 function statusClass(status){
-    if(status.startsWith("1")) return "status-playing";
-    if(status.startsWith("2")) return "status-onhold";
-    if(status.startsWith("3")) return "status-ongoing";
-    if(status.startsWith("4")) return "status-notstarted";
-    if(status.startsWith("5")) return "status-finished";
+    if(status === "Playing") return "status-playing";
+    if(status === "On-Hold") return "status-onhold";
+    if(status === "On-Going") return "status-ongoing";
+    if(status === "Not Started") return "status-notstarted";
+    if(status === "Finished") return "status-finished";
     return "";
 }
 
@@ -194,7 +200,7 @@ function attachListeners(){
 
 // add Row
 document.getElementById("addGameButton").onclick = ()=>{
-    games.unshift({ title: "New Game", status: "4. Not Started", dlc: "No", rating: "-"});
+    games.unshift({ title: "New Game", status: "Not Started", dlc: "No", rating: "-"});
     saveToStorage();
     renderTable();
 };
@@ -208,8 +214,15 @@ document.querySelectorAll("thead th").forEach(th=>{
         if(!key || key === "actions" || key === "id") //  || key === "cover" <-- implement later on (in TV?), also add ID (#) here when implemented?
             return;
 
+        if(key === "status") {
+            games.sort((a,b) => {
+                const orderA = statusOrder[a.status];
+                const orderB = statusOrder[b.status];
+                return orderA - orderB;
+            });
+        }
         // note: if rating 10 is given, it appears at the bottom of the list (probably due to sorting by first digit?) <-- fix soon!
-        if(!key || key === "dlc" || key === "rating" ) {
+        else if(!key || key === "dlc" || key === "rating" ) {
             games.sort((a,b)=>{
             const va=(a[key]||"").toString().toLowerCase();
             const vb=(b[key]||"").toString().toLowerCase();
@@ -239,7 +252,7 @@ document.getElementById("inputSearch").oninput = renderTable;
 // csv handling
 function generateCSV() {
     let csv = "ID,Title,Status,DLC,Rating\n";
-    games.forEach(game => {
+    games.forEach((game, index) => {
         csv += `${index + 1},${game.title},${game.status},${game.dlc},${game.rating}\n`;
     });
     return csv;
