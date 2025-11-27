@@ -58,7 +58,19 @@ function renderTable(){
                 </select>
             </td>
             <td>
-                <input type="text" value="${game.rating}" data-index="${index}" data-field="rating" style="width:50%">
+                <select data-index="${index}" data-field="rating">
+                    <option ${game.rating === "-" ? "selected" : ""}>-</option>
+                    <option ${game.rating === "1" ? "selected" : ""}>1</option>
+                    <option ${game.rating === "2" ? "selected" : ""}>2</option>
+                    <option ${game.rating === "3" ? "selected" : ""}>3</option>
+                    <option ${game.rating === "4" ? "selected" : ""}>4</option>
+                    <option ${game.rating === "5" ? "selected" : ""}>5</option>
+                    <option ${game.rating === "6" ? "selected" : ""}>6</option>
+                    <option ${game.rating === "7" ? "selected" : ""}>7</option>
+                    <option ${game.rating === "8" ? "selected" : ""}>8</option>
+                    <option ${game.rating === "9" ? "selected" : ""}>9</option>
+                    <option ${game.rating === "10" ? "selected" : ""}>10</option>
+                </select>
             </td>
             <td class="actions">
                 <button data-action="delete" data-index="${index}">Delete</button>
@@ -211,7 +223,7 @@ document.querySelectorAll("thead th").forEach(th=>{
         const key = th.dataset.key;
 
         // ignore if the user tries to sort these columns
-        if(!key || key === "actions" || key === "id") //  || key === "cover" <-- implement later on (in TV?), also add ID (#) here when implemented?
+        if(!key || key === "actions" || key === "id") //  || key === "cover" <-- implement later on (in TV?)
             return;
 
         if(key === "status") {
@@ -221,8 +233,19 @@ document.querySelectorAll("thead th").forEach(th=>{
                 return orderA - orderB;
             });
         }
-        // note: if rating 10 is given, it appears at the bottom of the list (probably due to sorting by first digit?) <-- fix soon!
-        else if(!key || key === "dlc" || key === "rating" ) {
+        else if(key === "rating") {
+            games.sort((a,b) => {
+                const ratingA = a.rating;
+                const ratingB = b.rating;
+
+                if (ratingA === "-" && ratingB === "-") return 0;
+                if (ratingA === "-" ) return 1;
+                if (ratingB === "-") return -1;
+
+                return parseInt(ratingB) - parseInt(ratingA);
+            });
+        }
+        else if(key === "dlc") {
             games.sort((a,b)=>{
             const va=(a[key]||"").toString().toLowerCase();
             const vb=(b[key]||"").toString().toLowerCase();
