@@ -156,11 +156,11 @@ td select {
     transform: scale(1.03);
 }
 
-.status-playing{background:#d1fae5;color:#065f46}
-.status-onhold{background:#fff7ed;color:#92400e}
-.status-ongoing{background:#f3e8ff;color:#5b21b6}
-.status-notstarted{background:#fee2e2;color:#991b1b}
-.status-finished{background:#dbf4ff;color:#0b5566}
+.status-playing{background:#c6ffbc;color:#004c00}
+.status-onhold{background:#ffea8e;color:#461b00}
+.status-ongoing{background:#f0ceff;color:#250060}
+.status-notstarted{background:#ffa0a0;color:#4f0000}
+.status-finished{background:#a1d6ff;color:#003540}
 
 .controls{
     display: flex;
@@ -177,6 +177,7 @@ td select {
     border-color: #151515;
     min-width: 180px;
     transition: 0.2s ease-in;
+    color: white;
 }
 
 .search:hover {
