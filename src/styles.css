@@ -37,18 +37,38 @@ h3{
 }
 
 button{
+    background-color: #202020;
+    color: white;
     padding: 8px 10px;
     border-radius: 8px;
+    border: 1px solid;
+    border-color: #151515;
     cursor: pointer;
+    transition: 0.2s ease-in;
+}
+
+button:hover{
+    background-color: #2e2e2e;
+    border-color: #dfbb68;
 }
 
 input[type=text], select{
     padding: 6px 8px;
+    background-color: #202020;
+    color: white;
     border-radius: 6px;
-    border: 1px solid transparent;
+    border: 1px solid;
+    border-color: #151515;
+    transition: 0.2s ease-in;
+}
+
+input[type=text]:hover, select:hover {
+    background-color: #2e2e2e;
+    border-color: #dfbb68;
 }
 
 table{
+    margin-top: 5px;
     width: 100%;
     table-layout: auto; 
     border: 1px solid rgba(255,255,255,0.18);
@@ -136,13 +156,22 @@ td select {
 
 .controls{
     display: flex;
-    gap: 6px;
+    gap: 8px;
     align-items: center;
+    margin-bottom: 5px;
 }
 
 .search{
     padding: 6px 8px;
+    background-color: #202020;
     border-radius: 6px;
-    border: 1px solid rgba(255,255,255,.05);
-    min-width: 180px
+    border: 1px solid;
+    border-color: #151515;
+    min-width: 180px;
+    transition: 0.2s ease-in;
+}
+
+.search:hover {
+    background-color: #2e2e2e;
+    border-color: #dfbb68;
 }
