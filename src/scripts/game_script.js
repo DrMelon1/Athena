@@ -5,6 +5,15 @@ const demoData = [
 
 let games = loadFromStorage() || demoData.slice();
 
+// Default sort table by status
+games.sort((a, b) => {
+    const va = (a.status || "").toLowerCase();
+    const vb = (b.status || "").toLowerCase();
+    if (va < vb) return -1;
+    if (va > vb) return 1;
+    return 0;
+});
+
 let fileHandle = null;
 
 const tbody = document.querySelector("#gameTable tbody");
