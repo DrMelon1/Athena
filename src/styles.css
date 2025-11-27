@@ -62,7 +62,7 @@ input[type=text], select{
     transition: 0.2s ease-in;
 }
 
-input[type=text]:hover, select:hover {
+input[type=text], select:hover {
     background-color: #2e2e2e;
     border-color: #dfbb68;
 }
@@ -86,6 +86,14 @@ thead th{
     cursor: pointer;
     text-align: center;
     border-bottom: 2px solid rgba(255,255,255,0.15);
+}
+
+thead th:hover {
+    background: linear-gradient(90deg, #dfbb68, #b28f4a);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    transition: 0.5s ease;
 }
 
 tbody td{

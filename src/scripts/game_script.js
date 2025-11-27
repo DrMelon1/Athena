@@ -202,9 +202,12 @@ document.getElementById("addGameButton").onclick = ()=>{
 document.querySelectorAll("thead th").forEach(th=>{
     th.onclick = ()=>{
         const key = th.dataset.key;
-        if(!key || key === "actions" || key === "cover") 
+
+        // ignore if the user tries to sort these columns
+        if(!key || key === "actions") //  || key === "cover" <-- implement later on (in TV?), also add ID (#) here when implemented?
             return;
 
+        // note: if rating 10 is given, it appears at the bottom of the list (probably due to sorting by first digit?) <-- fix soon!
         if(!key || key === "dlc" || key === "rating" ) {
             games.sort((a,b)=>{
             const va=(a[key]||"").toString().toLowerCase();
