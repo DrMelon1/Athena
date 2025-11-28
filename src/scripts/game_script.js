@@ -281,8 +281,8 @@ function generateCSV() {
     return csv;
 }
 
-// save as (.csv)
-function saveAsCSV() {
+// export (.csv)
+function exportCSV() {
     const csv = generateCSV();
     const blob = new Blob([csv], { type: 'text/csv' });
 
@@ -295,7 +295,7 @@ function saveAsCSV() {
 // save
 async function saveToCSV() {
     if(!("showSaveFilePicker" in window) || !fileHandle) {
-        return saveAsCSV();
+        return exportCSV();
     }
     
     const writable = await fileHandle.createWritable();
@@ -356,13 +356,13 @@ function loadCsvText(text) {
 // save button
 document.getElementById("saveFileButton").onclick = async() => {
     if (!("showSaveFilePicker" in window)) {
-        // if filesystem access not allowed >>> save as!!
-        saveAsCSV();
+        // if filesystem access not allowed >>> export (direct download)
+        exportCSV();
         return;
     }
 
     if (!fileHandle) {
-        // if file doesn't exist >>> save as!!
+        // if file doesn't exist >>> export!!
         fileHandle = await window.showSaveFilePicker({
             suggestedName: "game_backlog.csv",
             types: [{
@@ -374,8 +374,8 @@ document.getElementById("saveFileButton").onclick = async() => {
     saveToCSV();
 };
 
-// save as button
-document.getElementById("saveAsButton").onclick = saveAsCSV;
+// export .csv button
+document.getElementById("exportButton").onclick = exportCSV;
 
 
 // xss protection
