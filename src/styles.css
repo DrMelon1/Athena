@@ -184,7 +184,7 @@ td select {
     border-color: #dfbb68;
 }
 
-.button_grid {
+.portal_button_grid {
     margin-top: 40px;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
