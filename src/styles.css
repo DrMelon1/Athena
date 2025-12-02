@@ -183,3 +183,58 @@ td select {
     background-color: #2e2e2e;
     border-color: #dfbb68;
 }
+
+.button_grid {
+    margin-top: 40px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+}
+
+.portal_button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.25);
+    border: 3px solid #202020;
+    border-radius: 28px;
+    padding: 45px;
+    cursor: pointer;
+    transition: 0.25s ease-in-out;
+    text-decoration: none;
+    color: white;
+    backdrop-filter: blur(3px);
+    text-align: center;
+}
+
+.portal_button:hover {
+    border-color: #dfbb68;
+    box-shadow: 0 0 12px rgba(223,187,104,0.4);
+    transform: translateY(-3px);
+
+}
+
+.portal_button_icon {
+    width: 95px;
+    height: auto;
+    margin-bottom: 25px;
+    display: block;
+}
+
+.portal_button_content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.portal_button_content span {
+    font-size: 22px;
+    font-weight: bold;
+    text-align: center;
+    display: block;
+}
+
+/* sort and add comments later on */
