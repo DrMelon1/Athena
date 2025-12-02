@@ -36,6 +36,11 @@ h3{
     opacity: 0.55;
 }
 
+span h3 {
+    font-size: 15px;
+    opacity: 0.55;
+}
+
 button{
     background-color: #202020;
     color: white;
