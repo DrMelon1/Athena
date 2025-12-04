@@ -43,7 +43,7 @@ span h3 {
 
 button{
     background-color: #202020;
-    color: white;
+    color: #ffffff;
     padding: 8px 10px;
     border-radius: 8px;
     border: 1px solid;
@@ -60,7 +60,7 @@ button:hover{
 input[type=text], select{
     padding: 6px 8px;
     background-color: #202020;
-    color: white;
+    color: #ffffff;
     border-radius: 6px;
     border: 1px solid;
     border-color: #151515;
@@ -181,7 +181,7 @@ td select {
     border-color: #151515;
     min-width: 180px;
     transition: 0.2s ease-in;
-    color: white;
+    color: #ffffff;
 }
 
 .search:hover {
@@ -208,7 +208,7 @@ td select {
     cursor: pointer;
     transition: 0.25s ease-in-out;
     text-decoration: none;
-    color: white;
+    color: #ffffff;
     backdrop-filter: blur(3px);
     text-align: center;
 }
@@ -241,5 +241,20 @@ td select {
     text-align: center;
     display: block;
 }
+
+.github_link img{
+    display: block;
+    margin: 0 auto; 
+    max-width: 550px; 
+    width: 100%; 
+    height: auto;
+    transition: 0.3s ease-in-out;
+}
+
+.github_link img:hover{
+    max-width: 575px;
+    
+}
+
 
 /* sort and add comments later on */
