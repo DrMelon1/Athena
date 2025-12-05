@@ -1,6 +1,6 @@
 const demoData = [
-    { title: "game 1", status: "1. Playing", dlc: "No", rating: "-"},
-    { title: "dlc 1", status: "4. Not Started", dlc: "Yes", rating: "-"},
+    { title: "game 1", status: "Playing", dlc: "No", rating: "-"},
+    { title: "dlc 1", status: "Not Started", dlc: "Yes", rating: "-"},
 ];
 
 const statusOrder = {
@@ -10,6 +10,115 @@ const statusOrder = {
     "Not Started": 4,
     "Finished": 5
 };
+
+const statusColors = {
+    "Playing": "#c6ffbc",
+    "On-Hold": "#ffea8e",
+    "On-Going": "#f0ceff",
+    "Not Started": "#ffa0a0",
+    "Finished": "#a1d6ff"
+}
+
+let statusChart = null;
+
+function countGamesByStatus() {
+    const counts = {
+    "Playing": 0,
+    "On-Hold": 0,
+    "On-Going": 0,
+    "Not Started": 0,
+    "Finished": 0
+    };
+
+    games.forEach(game => {
+        const status = game.status;
+        if(status && counts.hasOwnProperty(status)) {
+            counts[status]++;
+        }
+    });
+
+    return counts;
+}
+
+function updatePieChart() {
+    const counts = countGamesByStatus();
+    const ctx = document.getElementById("statusChart");
+    if(!ctx) return;
+
+    const chartContext = ctx.getContext("2d");
+    if(!chartContext) return;
+
+    const totalGames = games.length;
+
+    const chartTotalElement = document.querySelector(".chart_total");
+    if(chartTotalElement) {
+        chartTotalElement.textContent = totalGames;
+    }
+
+    const labels = [];
+    const data = [];
+    const bgColors = [];
+
+    Object.entries(counts).forEach(([status, count]) => {
+        if(count > 0) {
+            labels.push(status);
+            data.push(count);
+            bgColors.push(statusColors[status]);
+        }
+    });
+
+
+    if(statusChart) {
+        
+        statusChart.destroy();
+        statusChart = null;
+    }
+
+    const currentTotalForChart = totalGames;
+
+    statusChart = new Chart(chartContext, {
+        type: "doughnut",
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: bgColors,
+                borderColor: "#151515",
+                borderWidth: 2,
+                hoverOffset: 15,
+                spacing: 2
+            }]
+        },
+
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            cutout: "60%",
+            radius: "85%",
+            plugins: {
+                legend: {display: false},
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.label || "";
+                            const value = context.raw || 0;
+                            if(currentTotalForChart === 0) return `${value} (0%)`;
+                            const percentage = Math.round((value / totalGames) * 100);
+                            return `${value} (${percentage}%)`;
+                        }
+                    },
+                    backgroundColor: "#151515",
+                    titleColor: "#dfbb68",
+                    bodyColor: "#ffffff",
+                    borderColor: "#dfbb68",
+                    borderWidth: 1
+                }
+            }
+        }
+    });
+
+    statusChart.totalGames = totalGames;
+}
 
 let games = loadFromStorage() || demoData.slice();
 
@@ -81,6 +190,7 @@ function renderTable(){
 
     });
 
+    updatePieChart();
     attachListeners();
 
 }
@@ -390,4 +500,3 @@ function escapeHtml(s){
 document.getElementById("inputSearch").value = "";
 renderTable();
 
-console.log("script.js run complete");

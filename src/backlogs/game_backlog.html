@@ -9,21 +9,38 @@
 </head>
 <body>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <div class="container">
+        <div class="header_section">
+            <div class="header_left">
 
-        <img src="../images/AthenaV2.png" alt="Athena Logo" style="width: 135px; height: auto;" />
+                <img src="../images/AthenaV2.png" alt="Athena Logo" style="width: 135px; height: auto;" />
 
-        <h1 class="backlog_link">
-            <a href="../../index.html">Athena</a> / Game Backlog
-        </h1>
-        <h3><i>Take your Time!</i></h3>
-
+                        
+                <h1 class="backlog_link">
+                    <a href="../../index.html">Athena</a> / Game Backlog
+                </h1>
+                <h3><i>Take your Time!</i></h3>
+                
+            </div>
+            <div class="chart_container">
+                <div class="chart_wrapper">
+                    <canvas id="statusChart"></canvas>
+                    <div class="chart_center">
+                        <span class="chart_total">0</span>
+                        <span class="chart_label">Total Games</span>
+                    </div>
+                </div>
+            </div>                
+        </div>
+        
         <div class="controls">
             <button id="addGameButton">+ Add Game</button>
             <button id="openFileButton">Open</button>
             <button id="saveFileButton">Save</button>
             <button id="exportButton">Export .csv</button>
-        </div>
+        </div>      
 
         <div style="margin-left: auto; display: flex; gap: 8px; align-items: center;">
             <select id="statusFilter">
