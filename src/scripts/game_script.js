@@ -95,6 +95,12 @@ function updatePieChart() {
             maintainAspectRatio: true,
             cutout: "60%",
             radius: "85%",
+
+            animation: {
+                animateRotate: false,
+                animateScale: false
+            },
+
             plugins: {
                 legend: {display: false},
                 tooltip: {
