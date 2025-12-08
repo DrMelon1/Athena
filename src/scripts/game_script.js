@@ -84,9 +84,8 @@ function updatePieChart() {
                 data: data,
                 backgroundColor: bgColors,
                 borderColor: "#151515",
-                borderWidth: 2,
-                hoverOffset: 15,
-                spacing: 2
+                borderWidth: 3,
+                hoverOffset: 15
             }]
         },
 
