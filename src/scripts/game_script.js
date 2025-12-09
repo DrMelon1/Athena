@@ -95,6 +95,7 @@ function updatePieChart() {
             cutout: "60%",
             radius: "85%",
 
+            // forced deactivated animations (active by default) due to inconsistent functionality (tested across multiple devices)
             animation: {
                 animateRotate: false,
                 animateScale: false
@@ -240,28 +241,25 @@ function openStatusMenu(badge, index) {
     // get badge position
     const rect = badge.getBoundingClientRect();
 
-    // calc available space
     const spaceBelow = window.innerHeight - rect.bottom;
     const spaceAbove = rect.top;
 
-    // est. menu height (approx. 40px per item + padding)
     const estimatedMenuHeight = options.length * 40 + 12;
 
-    // determine menu position
+    // determine menu position...
     if (spaceBelow >= estimatedMenuHeight || spaceBelow >= spaceAbove) {
 
-        // below
+        // ...below
         menu.style.top = (rect.bottom + window.scrollY) + "px";
     
     }
     else {
         
-        // above
+        // ...above
         menu.style.top = (rect.top + window.scrollY - estimatedMenuHeight) + "px";
 
     }
 
-    // horizontal position (aligned w/ badge)
     menu.style.left = (rect.left + window.scrollX) + "px";
 
     const closeMenu = (e) => {
@@ -296,7 +294,7 @@ function statusClass(status){
 }
 
 function attachListeners(){
-    // inputs / selects
+
     tbody.querySelectorAll("input[data-field], select[data-field]").forEach(elem=>{
         elem.onchange = ()=>{
             const index = elem.dataset.index; const f = elem.dataset.field;
@@ -489,7 +487,7 @@ document.getElementById("saveFileButton").onclick = async() => {
     saveToCSV();
 };
 
-// export .csv button
+// export (.csv) button
 document.getElementById("exportButton").onclick = exportCSV;
 
 
