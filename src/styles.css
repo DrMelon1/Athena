@@ -89,6 +89,7 @@ thead th{
     background: linear-gradient(90deg, rgba(255,255,255,.02), transparent);
     font-size: 13px;
     cursor: pointer;
+    position: relative;
     text-align: center;
     border-bottom: 2px solid rgba(255,255,255,0.15);
 }
@@ -99,6 +100,33 @@ thead th:hover {
     background-clip: text;
     color: transparent;
     transition: 0.5s ease;
+}
+
+thead th.sort-asc::after,
+thead th.sort-desc::after {
+    content: "";
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    transition: all 0.5s ease;
+}
+
+thead th.sort-asc::after {
+    border-bottom: 5px solid #ffffff;
+}
+thead th.sort-desc::after {
+    border-top: 5px solid #ffffff;
+}
+
+thead th.sort-asc:hover::after,
+thead th.sort-desc:hover::after {
+    border-bottom-color: #dfbb68;
+    border-top-color: #dfbb68;
 }
 
 tbody td{

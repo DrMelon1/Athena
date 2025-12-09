@@ -330,6 +330,12 @@ document.getElementById("addGameButton").onclick = ()=>{
     renderTable();
 };
 
+// 1 - asc | -1 - desc
+let sortState = {
+    key: null,
+    direction: 1
+}
+
 // header sort
 document.querySelectorAll("thead th").forEach(th=>{
     th.onclick = ()=>{
@@ -339,41 +345,62 @@ document.querySelectorAll("thead th").forEach(th=>{
         if(!key || key === "actions" || key === "id") //  || key === "cover" <-- implement later on (in TV?)
             return;
 
+        if (sortState.key === key) {
+            sortState.direction *= -1; // toggle 1 / -1
+
+        }
+        else {
+            sortState.key = key;
+        }
+
+        // makes sure that only one arrow is shown
+        document.querySelectorAll("thead th").forEach(header => {
+            header.classList.remove("sort-asc", "sort-desc");
+        });
+
+        th.classList.add(sortState.direction === 1 ? "sort-asc" : "sort-desc");
+
         if(key === "status") {
             games.sort((a,b) => {
                 const orderA = statusOrder[a.status];
                 const orderB = statusOrder[b.status];
-                return orderA - orderB;
+                return (orderA - orderB) * sortState.direction;
             });
         }
         else if(key === "rating") {
             games.sort((a,b) => {
-                const ratingA = a.rating;
-                const ratingB = b.rating;
+                
+                const parseRating = (rating) => {
+                    if(rating === "-") return -1;
+                    const num = parseInt(rating);
+                    return isNaN(num) ? -1 : num;
+                };
 
-                if (ratingA === "-" && ratingB === "-") return 0;
-                if (ratingA === "-" ) return 1;
-                if (ratingB === "-") return -1;
+                const ratingA = parseRating(a.rating);
+                const ratingB = parseRating(b.rating);
 
-                return parseInt(ratingB) - parseInt(ratingA);
+                return (ratingB - ratingA) * sortState.direction;
+
             });
         }
         else if(key === "dlc") {
             games.sort((a,b)=>{
             const va=(a[key]||"").toString().toLowerCase();
             const vb=(b[key]||"").toString().toLowerCase();
-            if(va>vb) return -1;
-            if(va<vb) return 1;
-            return 0;
+            let result = 0
+            if(va>vb) result = -1;
+            if(va<vb) result = 1;
+            return result * sortState.direction;
         });
         }
         else {
             games.sort((a,b)=>{
             const va=(a[key]||"").toString().toLowerCase();
             const vb=(b[key]||"").toString().toLowerCase();
-            if(va<vb) return -1;
-            if(va>vb) return 1;
-            return 0;
+            let result = 0;
+            if(va<vb) result = -1;
+            if(va>vb) result = 1;
+            return result * sortState.direction;
         });
         }
         saveToStorage();
